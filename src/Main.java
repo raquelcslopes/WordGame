@@ -5,7 +5,7 @@ public class Main {
 
         Game game = new Game(player);
 
-        game.checkWord();
+        game.start();
 
     }
 }

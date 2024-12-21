@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Game {
     private Player player;
@@ -9,16 +6,24 @@ public class Game {
     private ArrayList<String> fourLetterWord = new ArrayList<>();
     private ArrayList<String> fiveLetterWord = new ArrayList<>();
     private ArrayList<String> sixLetterWord = new ArrayList<>();
-    private String chosenWord = chooseRandomWord();
+    private String gameWord = chooseRandomWord();
     private int joker;//faz sentido?
 
-    public Game (Player player) {
-        this.player=player;
+    public Game(Player player) {
+        this.player = player;
         this.joker = 1;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getGameWord() {
+        return gameWord;
+    }
+
+    public void setGameWord(String gameWord) {
+        this.gameWord = gameWord;
     }
 
     public int getJoker() {
@@ -65,7 +70,7 @@ public class Game {
         this.sixLetterWord = sixLetterWord;
     }
 
-    public void start () {
+    public void start() {
         System.out.println(" WELCOME TO THE WORD GAME \n" +
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
@@ -73,13 +78,14 @@ public class Game {
                 "You also have 1 joker, so you can play a little instead of losing in the first round. IF BY MIRACLE you guess the word in 5 seconds, you will gain a extra joker.\n" +
                 "I guess it is it... Good luck Charlie! \n \n");
 
-
-        //shuflleWord();
-        //checkWord();
+        createLists();
+        chooseRandomWord();
+        shuflleWord();
+        checkWord();
 
     }
 
-    public void createLists () {
+    public void createLists() {
         getThreeLetterWord().add("ego");
         getThreeLetterWord().add("dor");
         getThreeLetterWord().add("ato");
@@ -105,35 +111,31 @@ public class Game {
         getSixLetterWord().add("otario");
     }
 
-    public String chooseRandomWord () {
-        createLists();
-
-        String choosenWord = " ";
-
+    public String chooseRandomWord() {
         int min = 0;
         int max = 4;
         int randomIndex = (int) (Math.random() * (max - min) + min);
 
-            switch (getJoker()) {
-                case 1:
-                    choosenWord = getThreeLetterWord().get(randomIndex);
-                    break;
-                case 2:
-                    choosenWord = getFourLetterWord().get(randomIndex);
-                    break;
-                case 3:
-                    choosenWord = getFiveLetterWord().get(randomIndex);
-                    break;
-                case 4:
-                    choosenWord = getSixLetterWord().get(randomIndex);
-                    break;
-            }
-            return choosenWord;
+        switch (getJoker()) {
+            case 1:
+                gameWord = getThreeLetterWord().get(randomIndex);
+                break;
+            case 2:
+                gameWord = getFourLetterWord().get(randomIndex);
+                break;
+            case 3:
+                gameWord = getFiveLetterWord().get(randomIndex);
+                break;
+            case 4:
+                gameWord = getSixLetterWord().get(randomIndex);
+                break;
+        }
+        return gameWord;
     }
 
-    public void shuflleWord () {
+    public void shuflleWord() {
         //converter em array de chars
-        char [] splitedChosenWord = chosenWord.toCharArray();
+        char[] splitedChosenWord = gameWord.toCharArray();
 
         //converter em lista
         List<Character> listCharOfChosenWord = new ArrayList<>();
@@ -145,24 +147,28 @@ public class Game {
         Collections.shuffle(listCharOfChosenWord);
 
         //converter de volta a array
-        for (int i =0; i< splitedChosenWord.length; i++) {
-            splitedChosenWord[i] = listCharOfChosenWord.get(i);
+        char[] newArray = new char[splitedChosenWord.length];
+
+        for (int i = 0; i < splitedChosenWord.length; i++) {
+            newArray[i] = listCharOfChosenWord.get(i);
         }
 
-        System.out.println(Arrays.toString(splitedChosenWord));
+        //se aleatorio = normal
+        if (Arrays.equals(newArray, splitedChosenWord)) {
+            start();
+        } else {
+            System.out.println(Arrays.toString(newArray));
+        }
     }
 
     public void checkWord () {
-        getPlayer().guessTheWord();
-
         String playerGuess = getPlayer().guessTheWord();
 
-        System.out.println(playerGuess.equals(chosenWord));
-
-
+        if(playerGuess.equals(getGameWord())) {
+            System.out.println("Uhh lucky bastard");
+        } else {
+            System.out.println("Nice try bitch");
+        }
     }
-
-
-
 }
 
