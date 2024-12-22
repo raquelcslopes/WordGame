@@ -19,6 +19,8 @@ public class Player {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("What's your guess?");
 
-        return myScanner.nextLine();
+        String guess = myScanner.next();
+
+        return guess;
     }
 }
