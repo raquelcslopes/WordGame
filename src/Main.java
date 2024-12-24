@@ -1,11 +1,16 @@
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         Player player = new Player("Ana");
 
         Game game = new Game(player);
 
-        game.start();
-
+        try {
+            game.start();
+        } catch (Exception e) {
+            System.out.println("Something went wrong.\n");
+        } finally {
+            game.start();
+        }
     }
 }

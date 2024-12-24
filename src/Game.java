@@ -6,13 +6,18 @@ public class Game {
     private ArrayList<String> fourLetterWord = new ArrayList<>();
     private ArrayList<String> fiveLetterWord = new ArrayList<>();
     private ArrayList<String> sixLetterWord = new ArrayList<>();
-    private String gameWord = chooseRandomWord();
+    private ArrayList<String> sevenLetterWord = new ArrayList<>();
+    private ArrayList<String> eigthLetterWord = new ArrayList<>();
+    private String gameWord;
+    List<Character> wordLevelList;
+    private char[] wordLevelSplitedCharArray;
     private int joker;
+    private int counter;
     private int gameLevel;
 
     public Game(Player player) {
         this.player = player;
-        this.joker = 1;
+        this.joker = 3;
         this.gameLevel = 1;
     }
 
@@ -24,84 +29,68 @@ public class Game {
         return gameWord;
     }
 
-    public void setGameWord(String gameWord) {
-        this.gameWord = gameWord;
-    }
-
     public int getJoker() {
         return joker;
+    }
+
+    public ArrayList<String> getSevenLetterWord() {
+        return sevenLetterWord;
+    }
+
+    public ArrayList<String> getEigthLetterWord() {
+        return eigthLetterWord;
     }
 
     public void setJoker(int joker) {
         this.joker = joker;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public ArrayList<String> getThreeLetterWord() {
         return threeLetterWord;
-    }
-
-    public void setThreeLetterWord(ArrayList<String> threeLetterWord) {
-        this.threeLetterWord = threeLetterWord;
     }
 
     public ArrayList<String> getFourLetterWord() {
         return fourLetterWord;
     }
 
-    public void setFourLetterWord(ArrayList<String> fourLetterWord) {
-        this.fourLetterWord = fourLetterWord;
-    }
 
     public ArrayList<String> getFiveLetterWord() {
         return fiveLetterWord;
     }
 
-    public void setFiveLetterWord(ArrayList<String> fiveLetterWord) {
-        this.fiveLetterWord = fiveLetterWord;
-    }
 
     public ArrayList<String> getSixLetterWord() {
         return sixLetterWord;
     }
 
-    public void setSixLetterWord(ArrayList<String> sixLetterWord) {
-        this.sixLetterWord = sixLetterWord;
-    }
 
     public int getGameLevel() {
         return gameLevel;
     }
 
-    public void setGameLevel(int gameLevel) {
-        this.gameLevel = gameLevel;
-    }
 
-    public void start() {
+    public void start() throws Exception {
         intro();
 
-        while (getJoker() != 0) {
+        while (getJoker() >= 0) {
             createLists();
-            chooseRandomWord();
-            shuflleWord();
+            wordLevel();
+            shuflleWordLevel();
             showShuffledWord();
             checkWord();
-           // increaseJoker();
+            increaseJoker();
         }
     }
 
-    private boolean intro() {
+    private void intro() throws NotAnOption {
         final String BACKGROUND_MAGENTA = "\u001B[45m";
         final String RESET = "\u001B[0m";
 
         System.out.println(BACKGROUND_MAGENTA + " WELCOME TO THE WORD GAME " + RESET + " \n" +
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
-                "We will start with a 3 letter word, then a 4 letter word and so on, until 6 letter word... After that you will have a trash letter between the shuffled letters. You though it would be easy han?! \n" +
-                "You also have 1 joker, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 5 seconds or guess 3 in a row, you will gain an extra joker.\n" +
+                "We will start with a 3 letter word, then a 4 letter word and so on, until 8 letter word... After that you will have a trash letter between the shuffled letters. You though it would be easy han?! \n" +
+                "You also have 3 jokers, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 5 seconds or guess 3 in a row, you will gain an extra joker.\n" +
                 "Write however you want, I'm not sensitive 😉 \n" +
                 "I guess it is it... Good luck Charlie! \n \n");
 
@@ -110,18 +99,13 @@ public class Game {
 
         String guess = myScanner.next().toLowerCase();
 
-        try {
-            if (guess.equals("y")) {
-                return true;
-            } else if (guess.equals("n")) {
-                System.out.println("Pussy");
-                setJoker(0);
-                return false;
-            } else {
-                throw new NotAnOption();
-            }
-        } catch (NotAnOption e) {
-            throw new RuntimeException(e);
+        if (guess.equals("y")) {
+            System.out.println("Let's start!");
+        } else if (guess.equals("n")) {
+            System.out.println("Coward...");
+            setJoker(-1);
+        } else {
+            throw new NotAnOption();
         }
     }
 
@@ -169,12 +153,32 @@ public class Game {
         getSixLetterWord().add("nocivo");
         getSixLetterWord().add("solene");
         getSixLetterWord().add("mister");
+
+        getSevenLetterWord().add("sublime");
+        getSevenLetterWord().add("sucinto");
+        getSevenLetterWord().add("empatia");
+        getSevenLetterWord().add("trivial");
+        getSevenLetterWord().add("sucesso");
+        getSevenLetterWord().add("estigma");
+        getSevenLetterWord().add("orgulho");
+        getSevenLetterWord().add("trivial");
+        getSevenLetterWord().add("virtude");
+        getSevenLetterWord().add("apatico");
+
+        getEigthLetterWord().add("inerente");
+        getEigthLetterWord().add("peculiar");
+        getEigthLetterWord().add("pandemia");
+        getEigthLetterWord().add("abstrato");
+        getEigthLetterWord().add("analogia");
+        getEigthLetterWord().add("inospito");
+        getEigthLetterWord().add("alicerce");
+        getEigthLetterWord().add("monotono");
+        getEigthLetterWord().add("prudente");
+        getEigthLetterWord().add("invasivo");
     }
 
-    public String chooseRandomWord() {
-        int min = 0;
-        int max = 9;
-        int randomIndex = (int) (Math.random() * (max - min) + min);
+    public void wordLevel() {
+        int randomIndex = (int) (Math.random() * (getThreeLetterWord().size()));
 
         switch (getGameLevel()) {
             case 1:
@@ -189,32 +193,40 @@ public class Game {
             case 4:
                 gameWord = getSixLetterWord().get(randomIndex);
                 break;
+            case 5:
+                gameWord = getSevenLetterWord().get(randomIndex);
+                break;
+            case 6:
+                gameWord = getEigthLetterWord().get(randomIndex);
+                break;
         }
-        return gameWord;
     }
 
-    public List<Character> shuflleWord() {
-        //converter em array de chars
-        char[] splitedChosenWord = gameWord.toCharArray();
+    private List<Character> convertWordLevelToList() {
+        wordLevelSplitedCharArray = gameWord.toCharArray();
+        List<Character> wordLevelList = new ArrayList<>();
 
-        //converter em lista
-        List<Character> listCharOfChosenWord = new ArrayList<>();
-        for (char element : splitedChosenWord) {
-            listCharOfChosenWord.add(element);
+        for (char element : wordLevelSplitedCharArray) {
+            wordLevelList.add(element);
         }
+        return wordLevelList;
+    }
 
+    public List<Character> shuflleWordLevel() {
         //fazer suffle
-        Collections.shuffle(listCharOfChosenWord);
+        wordLevelList = convertWordLevelToList();
+        Collections.shuffle(wordLevelList);
 
-        return listCharOfChosenWord;
+        return wordLevelList;
     }
 
-        public void showShuffledWord () {
-            final String BRIGHT_BACKGROUND_YELLOW = "\u001B[43;1m";
-            final String RESET = "\u001B[0m";
 
-            char[] splitedChosenWord = gameWord.toCharArray();
-            List<Character> listCharOfChosenWord = shuflleWord();
+    public void showShuffledWord() throws Exception {
+        final String BRIGHT_BACKGROUND_YELLOW = "\u001B[43;1m";
+        final String RESET = "\u001B[0m";
+
+        if (getGameLevel() < 7) {
+            List<Character> listCharOfChosenWord = shuflleWordLevel();
 
             //converter de volta a array
             char[] newArray = new char[listCharOfChosenWord.size()];
@@ -224,12 +236,31 @@ public class Game {
             }
 
             //se aleatorio = normal
-            if (Arrays.equals(newArray, splitedChosenWord)) {
+            if (Arrays.equals(newArray, wordLevelSplitedCharArray)) {
                 start();
             } else {
+                System.out.println(" ----- LEVEL " + getGameLevel() + " ----- ");
                 System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(newArray) + RESET);
             }
+
+        } else {
+            String abc = "abcdefghijklmnopqrstuvxz";
+            List<Character> abcCharacter = new ArrayList<>();
+
+            //criar array abc
+            for (int i = 0; i < abc.length(); i++) {
+                abcCharacter.add(abc.charAt(i));
+            }
+
+            //adicionar random letter e fazer shuffle
+            int randomIndex = (int) (Math.random() * (abc.length()));
+            wordLevelList.add(abcCharacter.get(randomIndex));
+            Collections.shuffle(wordLevelList);
+
+            System.out.println(BRIGHT_BACKGROUND_YELLOW + wordLevelList + RESET);
         }
+    }
+
 
     public boolean checkWord() {
         final String WHITE = "\u001B[37m";
@@ -239,34 +270,45 @@ public class Game {
         String playerGuess = getPlayer().guessTheWord().toLowerCase();
 
         if (playerGuess.equals(getGameWord())) {
-            System.out.println(WHITE + "Uhh lucky bastard\n1 JOKER left" + RESET);
+            System.out.println(WHITE + "Uhh lucky one\n" + getJoker() + " JOKER left" + RESET);
             gameLevel++;
+            counter++;
             return true;
-        } else if(playerGuess.equals("joker")) {
+        } else if (playerGuess.equals("joker")) {
             useJoker();
-            System.out.println(RED + "Dumb ass" + RESET);
+            System.out.println(RED + "Dummy" + RESET);
         } else {
-            System.out.println(WHITE + "Nice try bitch" + RESET);
+            System.out.println(WHITE + "Nice try" + RESET);
         }
         return false;
     }
 
-    public void increaseJoker () { //ERROR
-        int counter = 0;
-
-        if(checkWord()) {
-            counter += 1;
-        }
-
-        if(counter == 3) {
-            this.joker ++;
+    public void increaseJoker() {
+        if (counter == 3) {
+            this.joker++;
+            System.out.println(" ---- You've won 1 JOKER ---- ");
         }
     }
 
-    public void useJoker () {
+    public void useJoker() {
         System.out.println("The answer is: " + getGameWord());
         this.joker--;
-        System.out.println("You have " + getJoker() + " left...");
+        gameLevel++;
+
+        if (getJoker() >= 0) {
+            System.out.println("You have " + getJoker() + "  JOKER left...\n");
+        }
+
+        if (getJoker() < 0) {
+            System.out.println("                                                                               \n" +
+                    " ,----.     ,---.  ,--.   ,--.,------.     ,-----.,--.   ,--.,------.,------.  \n" +
+                    "'  .-./    /  O  \\ |   `.'   ||  .---'    '  .-.  '\\  `.'  / |  .---'|  .--. ' \n" +
+                    "|  | .---.|  .-.  ||  |'.'|  ||  `--,     |  | |  | \\     /  |  `--, |  '--'.' \n" +
+                    "'  '--'  ||  | |  ||  |   |  ||  `---.    '  '-'  '  \\   /   |  `---.|  |\\  \\  \n" +
+                    " `------' `--' `--'`--'   `--'`------'     `-----'    `-'    `------'`--' '--' \n" +
+                    "                                                                               ");
+        }
     }
 }
+
 
