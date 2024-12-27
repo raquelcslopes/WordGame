@@ -10,6 +10,7 @@ public class Game {
     private ArrayList<String> sixLetterWord = new ArrayList<>();
     private ArrayList<String> sevenLetterWord = new ArrayList<>();
     private ArrayList<String> eigthLetterWord = new ArrayList<>();
+    private ArrayList<String> wrongAnswers = new ArrayList<>();
     private String gameWord;
     List<Character> wordLevelList;
     private char[] wordLevelSplitedCharArray;
@@ -81,6 +82,10 @@ public class Game {
 
     public int getCounter() {
         return counter;
+    }
+
+    public ArrayList<String> getWrongAnswers() {
+        return wrongAnswers;
     }
 
     public void start() throws Exception {
@@ -332,11 +337,17 @@ public class Game {
         } else if (playerGuess.equals("joker")) {
             useJoker();
             System.out.println(RED + "Dummy 🫢" + RESET);
+
         } else if (playerGuess.equals("restart")) {
             restart();
+
+        } else if (getWrongAnswers().contains(playerGuess)) {
+            System.out.println("You've already tried this one\n");
+
         } else {
             System.out.println(WHITE + "Nice try 🫠\n" + RESET);
             wrongAnswerMusic();
+            getWrongAnswers().add(playerGuess);
             wrongAnswer();
         }
         return false;
