@@ -1,3 +1,5 @@
+import javax.sound.sampled.*;
+import java.io.IOException;
 import java.util.*;
 
 public class Game {
@@ -71,6 +73,7 @@ public class Game {
 
     public void start() throws Exception {
         intro();
+        backgroundMusic();
 
         while (getJoker() >= 0) {
             createLists();
@@ -262,7 +265,7 @@ public class Game {
     }
 
 
-    public boolean checkWord() {
+    public boolean checkWord() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         final String WHITE = "\u001B[37m";
         final String RED = "\033[0;31m";
         final String RESET = "\u001B[0m";
@@ -273,12 +276,14 @@ public class Game {
             System.out.println(WHITE + "Uhh lucky one\n" + getJoker() + " JOKER left" + RESET);
             gameLevel++;
             counter++;
+            rightAnswerMusic();
             return true;
         } else if (playerGuess.equals("joker")) {
             useJoker();
             System.out.println(RED + "Dummy" + RESET);
         } else {
             System.out.println(WHITE + "Nice try" + RESET);
+            wrongAnswerMusic();
         }
         return false;
     }
@@ -308,6 +313,24 @@ public class Game {
                     " `------' `--' `--'`--'   `--'`------'     `-----'    `-'    `------'`--' '--' \n" +
                     "                                                                               ");
         }
+    }
+
+    public void rightAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        String filePath = ("/Users/admin.mindera/Downloads/Correct Answer sound effect.wav");
+         Music musicObj = new Music();
+         musicObj.playMusic(filePath);
+    }
+
+    public void wrongAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        String filePath = ("/Users/admin.mindera/Downloads/Wrong Answer Sound effect.wav");
+        Music musicObj = new Music();
+        musicObj.playMusic(filePath);
+    }
+
+    public void backgroundMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        String filePath = ("/Users/admin.mindera/Downloads/10 minutes - Relax & study with me Lofi ｜ Space kitty #timer #10minutes   #10min #lofi.wav");
+        Music musicObj = new Music();
+        musicObj.playMusic(filePath);
     }
 }
 
