@@ -17,10 +17,9 @@ public class Player {
 
     public String guessTheWord () {
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("What's your guess?");
 
-        String guess = myScanner.next();
-
-        return guess;
+        return myScanner.next();
     }
+
+
 }

@@ -13,13 +13,14 @@ public class Game {
     private String gameWord;
     List<Character> wordLevelList;
     private char[] wordLevelSplitedCharArray;
+    private char[] getWordLevelShuffledCharArray;
     private int joker;
     private int counter;
     private int gameLevel;
 
     public Game(Player player) {
         this.player = player;
-        this.joker = 3;
+        this.joker = 10;
         this.gameLevel = 1;
     }
 
@@ -70,10 +71,21 @@ public class Game {
         return gameLevel;
     }
 
+    public void setGameLevel(int gameLevel) {
+        this.gameLevel = gameLevel;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
 
     public void start() throws Exception {
         intro();
-        backgroundMusic();
+        //backgroundMusic();
 
         while (getJoker() >= 0) {
             createLists();
@@ -82,6 +94,7 @@ public class Game {
             showShuffledWord();
             checkWord();
             increaseJoker();
+            finishGame();
         }
     }
 
@@ -93,17 +106,18 @@ public class Game {
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
                 "We will start with a 3 letter word, then a 4 letter word and so on, until 8 letter word... After that you will have a trash letter between the shuffled letters. You though it would be easy han?! \n" +
-                "You also have 3 jokers, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 5 seconds or guess 3 in a row, you will gain an extra joker.\n" +
+                "You also have 3 jokers, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 1.2 seconds or guess 3 in a row, you will gain an extra joker.\n" +
                 "Write however you want, I'm not sensitive 😉 \n" +
                 "I guess it is it... Good luck Charlie! \n \n");
 
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("Are you ready?? (Y/N)");
+        System.out.println("Are you ready?? ✌(-‿-)✌ (Y/N)");
 
         String guess = myScanner.next().toLowerCase();
 
         if (guess.equals("y")) {
-            System.out.println("Let's start!");
+            System.out.println("Let's start!\n " +
+                    "Don't forget to play ENTER");
         } else if (guess.equals("n")) {
             System.out.println("Coward...");
             setJoker(-1);
@@ -128,7 +142,7 @@ public class Game {
         getFourLetterWord().add("mito");
         getFourLetterWord().add("saga");
         getFourLetterWord().add("ruim");
-        getFourLetterWord().add("trás");
+        getFourLetterWord().add("tras");
         getFourLetterWord().add("caos");
         getFourLetterWord().add("sede");
         getFourLetterWord().add("zelo");
@@ -199,7 +213,7 @@ public class Game {
             case 5:
                 gameWord = getSevenLetterWord().get(randomIndex);
                 break;
-            case 6:
+            case 6, 7, 8, 9, 10:
                 gameWord = getEigthLetterWord().get(randomIndex);
                 break;
         }
@@ -229,79 +243,123 @@ public class Game {
         final String RESET = "\u001B[0m";
 
         if (getGameLevel() < 7) {
-            List<Character> listCharOfChosenWord = shuflleWordLevel();
+            getWordLevelShuffledCharArray = getChars();
 
-            //converter de volta a array
-            char[] newArray = new char[listCharOfChosenWord.size()];
-
-            for (int i = 0; i < listCharOfChosenWord.size(); i++) {
-                newArray[i] = listCharOfChosenWord.get(i);
-            }
-
-            //se aleatorio = normal
-            if (Arrays.equals(newArray, wordLevelSplitedCharArray)) {
-                start();
+            //if shuffle == original word
+            if (!Arrays.equals(getWordLevelShuffledCharArray, wordLevelSplitedCharArray)) {
+                //print shuffled word and increasing the game level
+                System.out.println(" \n----- LEVEL " + getGameLevel() + " ----- ");
+                System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(getWordLevelShuffledCharArray) + RESET);
             } else {
-                System.out.println(" ----- LEVEL " + getGameLevel() + " ----- ");
-                System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(newArray) + RESET);
+                wordLevel();
             }
-
         } else {
-            String abc = "abcdefghijklmnopqrstuvxz";
-            List<Character> abcCharacter = new ArrayList<>();
-
-            //criar array abc
-            for (int i = 0; i < abc.length(); i++) {
-                abcCharacter.add(abc.charAt(i));
-            }
-
-            //adicionar random letter e fazer shuffle
-            int randomIndex = (int) (Math.random() * (abc.length()));
-            wordLevelList.add(abcCharacter.get(randomIndex));
-            Collections.shuffle(wordLevelList);
-
-            System.out.println(BRIGHT_BACKGROUND_YELLOW + wordLevelList + RESET);
+            System.out.println(" \n----- LEVEL " + getGameLevel() + " ----- ");
+            addRandomLetter(BRIGHT_BACKGROUND_YELLOW, RESET);
         }
     }
 
+    private void wrongAnswer() throws Exception {
+        final String BRIGHT_BACKGROUND_YELLOW = "\u001B[43;1m";
+        final String RESET = "\u001B[0m";
 
-    public boolean checkWord() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        char[] wordChar = getWordLevelShuffledCharArray;
+
+        do {
+            System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(wordChar) + RESET);
+        } while (!checkWord());
+    }
+
+    private void addRandomLetter(String BRIGHT_BACKGROUND_YELLOW, String RESET) {
+        String abc = "abcdefghijklmnopqrstuvxz";
+        List<Character> abcCharacter = new ArrayList<>();
+
+        //create abc array
+        for (int i = 0; i < abc.length(); i++) {
+            abcCharacter.add(abc.charAt(i));
+        }
+
+        //add random letter and shuffle again
+        int randomIndex = (int) (Math.random() * (abc.length()));
+        wordLevelList.add(abcCharacter.get(randomIndex));
+        Collections.shuffle(wordLevelList);
+
+        //print the shuffled word
+        System.out.println(BRIGHT_BACKGROUND_YELLOW + wordLevelList + RESET);
+    }
+
+    private char[] getChars() {
+        List<Character> listCharOfChosenWord = shuflleWordLevel();
+
+        //convert to an array
+        char[] newArray = new char[listCharOfChosenWord.size()];
+
+        for (int i = 0; i < listCharOfChosenWord.size(); i++) {
+            newArray[i] = listCharOfChosenWord.get(i);
+        }
+        return newArray;
+    }
+
+
+    public boolean checkWord() throws Exception {
         final String WHITE = "\u001B[37m";
         final String RED = "\033[0;31m";
         final String RESET = "\u001B[0m";
+        final String BRIGHT_GREEN = "\u001B[32;1m";
+
+        //initialize the timer as soon as the player starts typing
+        long initialTime = System.nanoTime();
 
         String playerGuess = getPlayer().guessTheWord().toLowerCase();
 
+        //ends the timer count
+        long endTime = System.nanoTime();
+
+        double time = (endTime - initialTime) / 1_000_000_000.0;
+
         if (playerGuess.equals(getGameWord())) {
-            System.out.println(WHITE + "Uhh lucky one\n" + getJoker() + " JOKER left" + RESET);
-            gameLevel++;
-            counter++;
+            System.out.println(WHITE + "Uhh lucky one 🫣\n" + getJoker() + " JOKER left\n" + RESET);
             rightAnswerMusic();
+            setGameLevel(getGameLevel() + 1);
+            setCounter(getCounter() + 1);
+
+            if (time < 2) {
+                System.out.println(BRIGHT_GREEN + " ☞ QUICK ONE, YOU WON 1 JOKER 🥳" + RESET);
+                setJoker(getJoker() + 1);
+            }
             return true;
+
         } else if (playerGuess.equals("joker")) {
             useJoker();
-            System.out.println(RED + "Dummy" + RESET);
+            System.out.println(RED + "Dummy 🫢" + RESET);
+        } else if (playerGuess.equals("restart")) {
+            restart();
         } else {
-            System.out.println(WHITE + "Nice try" + RESET);
+            System.out.println(WHITE + "Nice try 🫠\n" + RESET);
             wrongAnswerMusic();
+            wrongAnswer();
         }
         return false;
     }
 
     public void increaseJoker() {
+        final String RESET = "\u001B[0m";
+        final String BRIGHT_GREEN = "\u001B[32;1m";
+
         if (counter == 3) {
             this.joker++;
-            System.out.println(" ---- You've won 1 JOKER ---- ");
+            System.out.println(BRIGHT_GREEN + " ☞ You've won 1 JOKER 🤗" + RESET);
+            setCounter(0);
         }
     }
 
     public void useJoker() {
-        System.out.println("The answer is: " + getGameWord());
-        this.joker--;
-        gameLevel++;
+        System.out.println("The answer is: " + getGameWord() + " 🤯");
+        setJoker(getJoker() - 1);
+        setGameLevel(getGameLevel() + 1);
 
         if (getJoker() >= 0) {
-            System.out.println("You have " + getJoker() + "  JOKER left...\n");
+            System.out.println("You have " + getJoker() + "  JOKER left...");
         }
 
         if (getJoker() < 0) {
@@ -317,8 +375,8 @@ public class Game {
 
     public void rightAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         String filePath = ("/Users/admin.mindera/Downloads/Correct Answer sound effect.wav");
-         Music musicObj = new Music();
-         musicObj.playMusic(filePath);
+        Music musicObj = new Music();
+        musicObj.playMusic(filePath);
     }
 
     public void wrongAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
@@ -332,6 +390,25 @@ public class Game {
         Music musicObj = new Music();
         musicObj.playMusic(filePath);
     }
+
+    public void restart() throws Exception {
+        start();
+        setJoker(3);
+    }
+
+    public void finishGame () {
+        if(getGameLevel() == 11) {
+            setJoker(-1);
+            System.out.println(" __        _____ _   _ _   _ _____ ____  \n" +
+                    " \\ \\      / /_ _| \\ | | \\ | | ____|  _ \\ \n" +
+                    "  \\ \\ /\\ / / | ||  \\| |  \\| |  _| | |_) |\n" +
+                    "   \\ V  V /  | || |\\  | |\\  | |___|  _ < \n" +
+                    "    \\_/\\_/  |___|_| \\_|_| \\_|_____|_| \\_\\\n" +
+                    "                                         ");
+        }
+    }
+
+
 }
 
 
