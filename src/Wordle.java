@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.Collections;
 
 public class Wordle {
     private ArrayList<String> fiveLetterWord = new ArrayList<>();
@@ -10,6 +9,7 @@ public class Wordle {
     private List<Character> gameWordCharList = new ArrayList<>();
     private int counter;
     private boolean gameOn = true;
+    private String playerGuess;
 
     public Wordle() {
     }
@@ -93,7 +93,8 @@ public class Wordle {
 
             while (gameOn) {
                 convertWordListOfChars();
-                compareWords();
+                printWhiteSpaces();
+                comparingWords();
                 loser();
             }
         }
@@ -135,44 +136,72 @@ public class Wordle {
         }
     }
 
+    public void printWhiteSpaces() {
+        System.out.println("▊ ▊ ▊ ▊ ▊");
+    }
 
-    public void compareWords() throws FewLetters {
-        final String BACKGROUND_GREEN = "\u001B[42m";
-        final String BACKGROUND_YELLOW = "\u001B[43m";
-        final String BACKGROUND_WHITE = "\u001B[47m";
-        final String RESET = "\u001B[0m";
+    public static Map<Character, ArrayList<Integer>> hashmapFunction(String word) {
+        Map<Character, ArrayList<Integer>> wordHashMap = new HashMap<>();
 
-        String playerGuess = getPlayer().guessTheWord().toLowerCase();
+        for (int i = 0; i < word.length(); i++) {
+            char character = word.charAt(i);
+            if (wordHashMap.containsKey(character)) {
+                wordHashMap.get(character).add(i);
+            } else {
+                ArrayList<Integer> positions = new ArrayList<>();
+                positions.add(i);
 
-        char[] playerGuessCharArray = playerGuess.toCharArray();
-        List<Character> playerGuessCharList = new ArrayList<>();
-
-        for (char element : playerGuessCharArray) {
-            playerGuessCharList.add(element);
+                wordHashMap.put(character, positions);
+            }
         }
 
-        fewLettersException(playerGuessCharList);
+        return wordHashMap;
+    }
 
-        if (playerGuess.equals(gameWord)) {
-            winner();
-            setCounter(7);
-        } else {
+    public void comparingWords() {
+        playerGuess = getPlayer().guessTheWord();
+        Map<Character, ArrayList<Integer>> gameHashMap = hashmapFunction(gameWord);
+        ArrayList<Character> playerGuessArrayList = new ArrayList<>();
+        ArrayList<Character> charOccurrences = new ArrayList<>();
 
-            for (int i = 0; i < playerGuessCharList.size(); i++) {
-                if (playerGuessCharList.get(i).equals(gameWordCharList.get(i))) {
-                    System.out.print(BACKGROUND_GREEN + playerGuessCharList.get(i) + RESET);
-                } else if (gameWordCharList.contains(playerGuessCharList.get(i))) {
-                    System.out.print(BACKGROUND_YELLOW + playerGuessCharList.get(i) + RESET);
+        for (char c : playerGuess.toCharArray()) {
+            playerGuessArrayList.add(c);
+        }
+
+        coloringChars(playerGuessArrayList, gameHashMap, charOccurrences);
+    }
+
+    private void coloringChars(ArrayList<Character> playerGuessArrayList, Map<Character, ArrayList<Integer>> gameHashMap, ArrayList<Character> charOccurrences) {
+        final String BACKGROUND_WHITE = "\u001B[47m";
+        final String BACKGROUND_GREEN = "\u001B[42m";
+        final String BACKGROUND_YELLOW = "\u001B[43m";
+        final String RESET = "\u001B[0m";
+
+        for (int i = 0; i < playerGuess.length(); i++) {
+            Character currentKey = playerGuessArrayList.get(i);
+
+            if (gameHashMap.get(currentKey) != null) {
+            charOccurrences.add(currentKey);
+            boolean canOccur = Collections.frequency(charOccurrences, currentKey) <= gameHashMap.get(currentKey).size();
+
+
+                if (gameHashMap.containsKey(playerGuessArrayList.get(i)) && gameHashMap.get(currentKey).contains(i)) {
+                    System.out.print(BACKGROUND_GREEN + currentKey + RESET);
+
+                } else if (gameHashMap.containsKey(playerGuessArrayList.get(i)) && canOccur && !gameHashMap.get(currentKey).contains(i)) {
+                    System.out.print(BACKGROUND_YELLOW + currentKey + RESET);
+
                 } else {
-                    System.out.print(BACKGROUND_WHITE + playerGuessCharList.get(i) + RESET);
+                    System.out.print(BACKGROUND_WHITE + currentKey + RESET);
                 }
+            } else {
+                System.out.print(BACKGROUND_WHITE + currentKey + RESET);
             }
-            setCounter(getCounter() + 1);
         }
     }
 
     private static void fewLettersException(List<Character> playerGuessCharList) throws FewLetters {
-        if(playerGuessCharList.size()<5) {
+        if (playerGuessCharList.size() < 5) {
             throw new FewLetters();
         }
     }
