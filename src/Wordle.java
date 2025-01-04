@@ -1,3 +1,6 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.*;
 import java.util.Collections;
 
@@ -26,10 +29,6 @@ public class Wordle {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public int getCounter() {
         return counter;
     }
@@ -38,53 +37,61 @@ public class Wordle {
         this.counter = counter;
     }
 
-    public boolean isGameOn() {
-        return gameOn;
-    }
-
     public void setGameOn(boolean gameOn) {
         this.gameOn = gameOn;
     }
 
     public void intro() throws NotAnOption {
-        final String RESET = "\u001B[0m";
-        final String BACKGROUND_GREEN = "\u001B[42m";
-        final String BACKGROUND_YELLOW = "\u001B[43m";
-        final String BACKGROUND_WHITE = "\u001B[47m";
-        final String GREEN = "\u001B[32m";
-        final String YELLOW = "\u001B[33m";
-        final String WHITE = "\u001B[37m";
-
-        System.out.print(BACKGROUND_GREEN + " W " + RESET);
-        System.out.print(BACKGROUND_YELLOW + " O " + RESET);
-        System.out.print(BACKGROUND_WHITE + " R " + RESET);
-        System.out.print(BACKGROUND_GREEN + " D " + RESET);
-        System.out.print(BACKGROUND_YELLOW + " L " + RESET);
-        System.out.print(BACKGROUND_WHITE + " E " + RESET);
+        System.out.print(Colors.BACKGROUND_GREEN.getColorCode() + " W " + Colors.RESET.getColorCode());
+        System.out.print(Colors.BACKGROUND_YELLOW.getColorCode() + " O " + Colors.RESET.getColorCode());
+        System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + " R " + Colors.RESET.getColorCode());
+        System.out.print(Colors.BACKGROUND_GREEN.getColorCode() + " D " + Colors.RESET.getColorCode());
+        System.out.print(Colors.BACKGROUND_YELLOW.getColorCode() + " L " + Colors.RESET.getColorCode());
+        System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + " E " + Colors.RESET.getColorCode());
 
         System.out.println("\nWordle is a word puzzle game where players try to guess a secret five-letter word within six attempts. After each guess, the game provides feedback:\n" +
                 "\n" +
-                GREEN + "Green:" + RESET + "The letter is correct and in the right position.\n" +
-                YELLOW + "Yellow:" + RESET + "The letter is correct but in the wrong position.\n" +
-                WHITE + "Gray:" + RESET + "The letter is not in the word at all.");
+                Colors.GREEN.getColorCode() + "Green:" + Colors.RESET.getColorCode() + "The letter is correct and in the right position.\n" +
+                Colors.YELLOW.getColorCode() + "Yellow:" + Colors.RESET.getColorCode() + "The letter is correct but in the wrong position.\n" +
+                Colors.WHITE.getColorCode() + "Gray:" + Colors.RESET.getColorCode() + "The letter is not in the word at all.");
 
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("\nAre you ready?? ✌(-‿-)✌ (Y/N)");
+        boolean validInput = false;
 
-        String guess = myScanner.next().toLowerCase();
+        while (!validInput) {
+            System.out.println("Are you ready?? ✌(-‿-)✌ (Y/N or type 'exit' to quit)");
 
-        if (guess.equals("y")) {
-            System.out.println("Let's start!\n " +
-                    "Don't forget to play ENTER\n");
-        } else if (guess.equals("n")) {
-            System.out.println("Coward...");
-        } else {
-            throw new NotAnOption();
+            String guess = myScanner.next().toLowerCase();
+
+            try {
+                switch (guess) {
+                    case "y":
+                        System.out.println("Let's start!\n" +
+                                "Don't forget to play ENTER");
+                        validInput = true;
+                        break;
+
+                    case "n":
+                        System.out.println("Coward...");
+                        validInput = true;
+                        break;
+
+                    case "exit":
+                        System.out.println("Goodbye! See you next time! ✌(-‿-)✌");
+                        System.exit(0);
+                        break;
+
+                    default:
+                        throw new NotAnOption();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
 
-    public void start() throws NotAnOption, FewLetters {
+    public void start() throws Exception {
         intro();
 
         while (getCounter() <= 6) {
@@ -126,9 +133,6 @@ public class Wordle {
     }
 
     public void convertWordListOfChars() {
-        System.out.println("This is the game word " + gameWord);
-
-
         gameWordCharArray = gameWord.toCharArray();
 
         for (char element : gameWordCharArray) {
@@ -137,7 +141,7 @@ public class Wordle {
     }
 
     public void printWhiteSpaces() {
-        System.out.println("▊ ▊ ▊ ▊ ▊");
+        System.out.println("\n ▊ ▊ ▊ ▊ ▊\n");
     }
 
     public static Map<Character, ArrayList<Integer>> hashmapFunction(String word) {
@@ -158,7 +162,7 @@ public class Wordle {
         return wordHashMap;
     }
 
-    public void comparingWords() {
+    public void comparingWords() throws Exception {
         playerGuess = getPlayer().guessTheWord();
         Map<Character, ArrayList<Integer>> gameHashMap = hashmapFunction(gameWord);
         ArrayList<Character> playerGuessArrayList = new ArrayList<>();
@@ -168,42 +172,63 @@ public class Wordle {
             playerGuessArrayList.add(c);
         }
 
+        numberOfLettersException();
+
+        if(playerGuess.equals(gameWord)) {
+            rightAnswerMusic();
+            winner();
+        }
+
         coloringChars(playerGuessArrayList, gameHashMap, charOccurrences);
+        counter++;
+    }
+
+    private void numberOfLettersException() {
+        try {
+            if (playerGuess.length() != 5) {
+                throw new NumberOfLettersWrong();
+            }
+        } catch (NumberOfLettersWrong e) {
+            System.out.println(e.getMessage());
+        } finally {
+            printWhiteSpaces();
+        }
     }
 
     private void coloringChars(ArrayList<Character> playerGuessArrayList, Map<Character, ArrayList<Integer>> gameHashMap, ArrayList<Character> charOccurrences) {
-        final String BACKGROUND_WHITE = "\u001B[47m";
-        final String BACKGROUND_GREEN = "\u001B[42m";
-        final String BACKGROUND_YELLOW = "\u001B[43m";
-        final String RESET = "\u001B[0m";
-
         for (int i = 0; i < playerGuess.length(); i++) {
             Character currentKey = playerGuessArrayList.get(i);
 
             if (gameHashMap.get(currentKey) != null) {
-            charOccurrences.add(currentKey);
-            boolean canOccur = Collections.frequency(charOccurrences, currentKey) <= gameHashMap.get(currentKey).size();
+                charOccurrences.add(currentKey);
+                boolean canOccur = Collections.frequency(charOccurrences, currentKey) <= gameHashMap.get(currentKey).size();
 
 
                 if (gameHashMap.containsKey(playerGuessArrayList.get(i)) && gameHashMap.get(currentKey).contains(i)) {
-                    System.out.print(BACKGROUND_GREEN + currentKey + RESET);
+                    System.out.print(Colors.BACKGROUND_GREEN.getColorCode() + currentKey + Colors.RESET.getColorCode());
 
                 } else if (gameHashMap.containsKey(playerGuessArrayList.get(i)) && canOccur && !gameHashMap.get(currentKey).contains(i)) {
-                    System.out.print(BACKGROUND_YELLOW + currentKey + RESET);
+                    System.out.print(Colors.BACKGROUND_YELLOW.getColorCode() + currentKey + Colors.RESET.getColorCode());
 
                 } else {
-                    System.out.print(BACKGROUND_WHITE + currentKey + RESET);
+                    System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + currentKey + Colors.RESET.getColorCode());
                 }
             } else {
-                System.out.print(BACKGROUND_WHITE + currentKey + RESET);
+                System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + currentKey + Colors.RESET.getColorCode());
             }
         }
     }
 
-    private static void fewLettersException(List<Character> playerGuessCharList) throws FewLetters {
-        if (playerGuessCharList.size() < 5) {
-            throw new FewLetters();
-        }
+    public void rightAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/Correct Answer sound effect.wav");
+        Music musicObj = new Music();
+        musicObj.playMusic(filePath);
+    }
+
+    public void gameOverMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+        String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/Game Over Sounds effect.wav");
+        Music musicObj = new Music();
+        musicObj.playMusic(filePath);
     }
 
     public void winner() {
@@ -213,11 +238,16 @@ public class Wordle {
                 "   \\ V  V /  | || |\\  | |\\  | |___|  _ < \n" +
                 "    \\_/\\_/  |___|_| \\_|_| \\_|_____|_| \\_\\\n" +
                 "                                         ");
+
+        setCounter(7);
+        setGameOn(false);
+
     }
 
-    public void loser() {
+    public void loser() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         if (getCounter() == 7) {
             setGameOn(false);
+            gameOverMusic();
             System.out.println("   ___       .    __   __ .____         ___   __    __ .____  .___ \n" +
                     " .'   \\     /|    |    |  /           .'   `. |     |  /      /   \\\n" +
                     " |         /  \\   |\\  /|  |__.        |     |  \\    /  |__.   |__-'\n" +

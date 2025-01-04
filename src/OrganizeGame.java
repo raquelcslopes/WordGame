@@ -21,7 +21,7 @@ public class OrganizeGame {
     private int gameLevel;
 
     public OrganizeGame() {
-        this.joker = 10;
+        this.joker = 3;
         this.gameLevel = 1;
     }
 
@@ -90,7 +90,7 @@ public class OrganizeGame {
 
     public void start() throws Exception {
         intro();
-        //backgroundMusic();
+        backgroundMusic();
 
         while (getJoker() >= 0) {
             createLists();
@@ -103,11 +103,8 @@ public class OrganizeGame {
         }
     }
 
-    private void intro() throws NotAnOption {
-        final String BACKGROUND_MAGENTA = "\u001B[45m";
-        final String RESET = "\u001B[0m";
-
-        System.out.println(BACKGROUND_MAGENTA + " WELCOME TO THE WORD GAME " + RESET + " \n" +
+    private void intro() throws Exception {
+        System.out.println(Colors.MAGENTA.getColorCode() + " WELCOME TO THE WORD GAME " + Colors.RESET.getColorCode() + " \n" +
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
                 "We will start with a 3 letter word, then a 4 letter word and so on, until 8 letter word... After that you will have a trash letter between the shuffled letters. You though it would be easy han?! \n" +
@@ -116,18 +113,38 @@ public class OrganizeGame {
                 "I guess it is it... Good luck Charlie! \n \n");
 
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("Are you ready?? ✌(-‿-)✌ (Y/N)");
+        boolean validInput = false;
 
-        String guess = myScanner.next().toLowerCase();
+        while (!validInput) {
+            System.out.println("Are you ready?? ✌(-‿-)✌ (Y/N or type 'exit' to quit)");
 
-        if (guess.equals("y")) {
-            System.out.println("Let's start!\n " +
-                    "Don't forget to play ENTER");
-        } else if (guess.equals("n")) {
-            System.out.println("Coward...");
-            setJoker(-1);
-        } else {
-            throw new NotAnOption();
+            String guess = myScanner.next().toLowerCase();
+
+            try {
+                switch (guess) {
+                    case "y":
+                        System.out.println("Let's start!\n" +
+                                "Don't forget to play ENTER");
+                        validInput = true;
+                        break;
+
+                    case "n":
+                        System.out.println("Coward...");
+                        setJoker(-1);
+                        validInput = true;
+                        break;
+
+                    case "exit":
+                        System.out.println("Goodbye! See you next time! ✌(-‿-)✌");
+                        System.exit(0);
+                        break;
+
+                    default:
+                        throw new NotAnOption();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -235,7 +252,7 @@ public class OrganizeGame {
     }
 
     public List<Character> shuflleWordLevel() {
-        //fazer suffle
+        //shuffle
         wordLevelList = convertWordLevelToList();
         Collections.shuffle(wordLevelList);
 
@@ -244,38 +261,32 @@ public class OrganizeGame {
 
 
     public void showShuffledWord() throws Exception {
-        final String BRIGHT_BACKGROUND_YELLOW = "\u001B[43;1m";
-        final String RESET = "\u001B[0m";
-
         if (getGameLevel() < 7) {
             getWordLevelShuffledCharArray = getChars();
 
             //if shuffle == original word
             if (!Arrays.equals(getWordLevelShuffledCharArray, wordLevelSplitedCharArray)) {
                 //print shuffled word and increasing the game level
-                System.out.println(" \n----- LEVEL " + getGameLevel() + " ----- ");
-                System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(getWordLevelShuffledCharArray) + RESET);
+                System.out.println(Colors.BOLD.getColorCode() + " \n----- LEVEL " + getGameLevel() + " ----- " + Colors.RESET.getColorCode());
+                System.out.println(Colors.BACKGROUND_YELLOW.getColorCode() + Arrays.toString(getWordLevelShuffledCharArray) + Colors.RESET.getColorCode());
             } else {
                 wordLevel();
             }
         } else {
             System.out.println(" \n----- LEVEL " + getGameLevel() + " ----- ");
-            addRandomLetter(BRIGHT_BACKGROUND_YELLOW, RESET);
+            addRandomLetter();
         }
     }
 
     private void wrongAnswer() throws Exception {
-        final String BRIGHT_BACKGROUND_YELLOW = "\u001B[43;1m";
-        final String RESET = "\u001B[0m";
-
         char[] wordChar = getWordLevelShuffledCharArray;
 
         do {
-            System.out.println(BRIGHT_BACKGROUND_YELLOW + Arrays.toString(wordChar) + RESET);
+            System.out.println(Colors.BACKGROUND_YELLOW.getColorCode() + Arrays.toString(wordChar) + Colors.RESET.getColorCode());
         } while (!checkWord());
     }
 
-    private void addRandomLetter(String BRIGHT_BACKGROUND_YELLOW, String RESET) {
+    private void addRandomLetter() {
         String abc = "abcdefghijklmnopqrstuvxz";
         List<Character> abcCharacter = new ArrayList<>();
 
@@ -290,7 +301,7 @@ public class OrganizeGame {
         Collections.shuffle(wordLevelList);
 
         //print the shuffled word
-        System.out.println(BRIGHT_BACKGROUND_YELLOW + wordLevelList + RESET);
+        System.out.println(Colors.BACKGROUND_YELLOW.getColorCode() + wordLevelList + Colors.RESET.getColorCode());
     }
 
     private char[] getChars() {
@@ -307,11 +318,6 @@ public class OrganizeGame {
 
 
     public boolean checkWord() throws Exception {
-        final String WHITE = "\u001B[37m";
-        final String RED = "\033[0;31m";
-        final String RESET = "\u001B[0m";
-        final String BRIGHT_GREEN = "\u001B[32;1m";
-
         //initialize the timer as soon as the player starts typing
         long initialTime = System.nanoTime();
 
@@ -323,20 +329,20 @@ public class OrganizeGame {
         double time = (endTime - initialTime) / 1_000_000_000.0;
 
         if (playerGuess.equals(getGameWord())) {
-            System.out.println(WHITE + "Uhh lucky one 🫣\n" + getJoker() + " JOKER left\n" + RESET);
+            System.out.println(Colors.WHITE.getColorCode() + "Uhh lucky one 🫣\n" + getJoker() + " JOKER left\n" + Colors.RESET.getColorCode());
             rightAnswerMusic();
             setGameLevel(getGameLevel() + 1);
             setCounter(getCounter() + 1);
 
             if (time < 2) {
-                System.out.println(BRIGHT_GREEN + " ☞ QUICK ONE, YOU WON 1 JOKER 🥳" + RESET);
+                System.out.println(Colors.GREEN.getColorCode() + " ☞ QUICK ONE, YOU WON 1 JOKER 🥳" + Colors.RESET.getColorCode());
                 setJoker(getJoker() + 1);
             }
             return true;
 
         } else if (playerGuess.equals("joker")) {
             useJoker();
-            System.out.println(RED + "Dummy 🫢" + RESET);
+            System.out.println(Colors.RED.getColorCode() + "Dummy 🫢" + Colors.RESET.getColorCode());
 
         } else if (playerGuess.equals("restart")) {
             JOptionPane.showMessageDialog(null, "Are you sure?", null,
@@ -347,7 +353,7 @@ public class OrganizeGame {
             System.out.println("You've already tried this one\n");
 
         } else {
-            System.out.println(WHITE + "Nice try 🫠\n" + RESET);
+            System.out.println(Colors.WHITE.getColorCode() + "Nice try 🫠\n" + Colors.RESET.getColorCode());
             wrongAnswerMusic();
             getWrongAnswers().add(playerGuess);
             wrongAnswer();
@@ -356,12 +362,9 @@ public class OrganizeGame {
     }
 
     public void increaseJoker() {
-        final String RESET = "\u001B[0m";
-        final String BRIGHT_GREEN = "\u001B[32;1m";
-
         if (counter == 3) {
             this.joker++;
-            System.out.println(BRIGHT_GREEN + " ☞ You've won 1 JOKER 🤗" + RESET);
+            System.out.println(Colors.GREEN.getColorCode()+ " ☞ You've won 1 JOKER 🤗" + Colors.RESET.getColorCode());
             setCounter(0);
         }
     }

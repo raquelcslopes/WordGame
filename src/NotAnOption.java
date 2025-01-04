@@ -1,5 +1,5 @@
 public class NotAnOption extends Exception {
     public NotAnOption() {
-        super("Think before you write 🫠");
+        super(Colors.RED.getColorCode() + "Think before you write 🫠\n" + Colors.RESET.getColorCode());
     }
 }
