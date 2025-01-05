@@ -1,5 +1,6 @@
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.Collections;
@@ -179,6 +180,12 @@ public class Wordle {
             winner();
         }
 
+        if(playerGuess.equals("restart")) {
+            JOptionPane.showMessageDialog(null, "Are you sure?", null,
+                    JOptionPane.INFORMATION_MESSAGE);
+            restart();
+        }
+
         coloringChars(playerGuessArrayList, gameHashMap, charOccurrences);
         counter++;
     }
@@ -254,5 +261,10 @@ public class Wordle {
                     " |    _   /---'\\  | \\/ |  |           |     |   \\  /   |      |  \\ \n" +
                     "  `.___|,'      \\ /    /  /----/       `.__.'    \\/    /----/ /   \\");
         }
+    }
+
+    public void restart() throws Exception {
+        start();
+        setCounter(0);
     }
 }

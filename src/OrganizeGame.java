@@ -334,7 +334,7 @@ public class OrganizeGame {
             setGameLevel(getGameLevel() + 1);
             setCounter(getCounter() + 1);
 
-            if (time < 2) {
+            if (time < 3) {
                 System.out.println(Colors.GREEN.getColorCode() + " ☞ QUICK ONE, YOU WON 1 JOKER 🥳" + Colors.RESET.getColorCode());
                 setJoker(getJoker() + 1);
             }
@@ -402,7 +402,7 @@ public class OrganizeGame {
     }
 
     public void backgroundMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-        String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/10 minutes - Relax & study with me Lofi ｜ Space kitty #timer #10minutes   #10min #lofi.wav");
+        String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/Sap Green.wav");
         Music musicObj = new Music();
         musicObj.playMusic(filePath);
     }
