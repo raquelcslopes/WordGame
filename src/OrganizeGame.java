@@ -19,6 +19,7 @@ public class OrganizeGame {
     private int joker;
     private int counter;
     private int gameLevel;
+    Music musicObj = new Music();
 
     public OrganizeGame() {
         this.joker = 3;
@@ -125,7 +126,7 @@ public class OrganizeGame {
                         System.out.println("Let's start!\n" +
                                 "Don't forget to play ENTER");
                         validInput = true;
-                        backgroundMusic();
+                        //backgroundMusic();
                         break;
 
                     case "n":
@@ -397,13 +398,11 @@ public class OrganizeGame {
 
     public void wrongAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/Wrong Answer Sound effect.wav");
-        Music musicObj = new Music();
         musicObj.playMusic(filePath);
     }
 
     public void backgroundMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         String filePath = ("/Users/admin.mindera/IdeaProjects/Word Game/src/Assets/Sap Green.wav");
-        Music musicObj = new Music();
         musicObj.playMusic(filePath);
     }
 

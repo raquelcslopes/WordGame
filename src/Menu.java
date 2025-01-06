@@ -5,7 +5,7 @@ public class Menu {
     public Menu () {
     }
 
-    public int menuChoice () {
+    public String menuChoice () {
         Scanner myScanner = new Scanner(System.in);
 
         System.out.println(
@@ -20,6 +20,6 @@ public class Menu {
                 "\n" +
                         "Choose your sentence:");
 
-       return myScanner.nextInt();
+       return myScanner.nextLine();
     }
 }

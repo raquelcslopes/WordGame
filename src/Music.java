@@ -16,6 +16,11 @@ public class Music {
 
             Clip clip = AudioSystem.getClip();
             clip.open(audio);
+
+            FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            float volume = -10.0f;
+            volumeControl.setValue(volume);
+
             clip.start();
         } else {
             System.out.println("Can't find path");

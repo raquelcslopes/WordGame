@@ -15,9 +15,6 @@ public class Wordle {
     private boolean gameOn = true;
     private String playerGuess;
 
-    public Wordle() {
-    }
-
     public ArrayList<String> getFiveLetterWord() {
         return fiveLetterWord;
     }
@@ -94,17 +91,14 @@ public class Wordle {
 
     public void start() throws Exception {
         intro();
+        createList();
+        defineWord();
+        printWhiteSpaces();
 
         while (getCounter() <= 6) {
-            createList();
-            defineWord();
-            printWhiteSpaces();
-
-            while (gameOn) {
-                convertWordListOfChars();
-                comparingWords();
-                loser();
-            }
+            convertWordListOfChars();
+            comparingWords();
+            loser();
         }
     }
 
@@ -175,12 +169,12 @@ public class Wordle {
 
         numberOfLettersException();
 
-        if(playerGuess.equals(gameWord)) {
+        if (playerGuess.equals(gameWord)) {
             rightAnswerMusic();
             winner();
         }
 
-        if(playerGuess.equals("restart")) {
+        if (playerGuess.equals("restart")) {
             JOptionPane.showMessageDialog(null, "Are you sure?", null,
                     JOptionPane.INFORMATION_MESSAGE);
             restart();
@@ -223,6 +217,7 @@ public class Wordle {
                 System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + currentKey + Colors.RESET.getColorCode());
             }
         }
+        System.out.println("\n");
     }
 
     public void rightAnswerMusic() throws UnsupportedAudioFileException, LineUnavailableException, IOException {

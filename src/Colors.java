@@ -14,7 +14,7 @@ public enum Colors {
 
     private final String colorCode;
 
-    private Colors (String colorCode) {
+    Colors (String colorCode) {
         this.colorCode = colorCode;
     }
 
