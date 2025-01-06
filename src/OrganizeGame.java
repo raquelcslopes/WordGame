@@ -90,7 +90,6 @@ public class OrganizeGame {
 
     public void start() throws Exception {
         intro();
-        backgroundMusic();
 
         while (getJoker() >= 0) {
             createLists();
@@ -108,7 +107,7 @@ public class OrganizeGame {
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
                 "We will start with a 3 letter word, then a 4 letter word and so on, until 8 letter word... After that you will have a trash letter between the shuffled letters. You though it would be easy han?! \n" +
-                "You also have 3 jokers, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 1.2 seconds or guess 3 in a row, you will gain an extra joker.\n" +
+                "You also have 3 jokers, so you can play a little, instead of losing on the first round. IF BY MIRACLE you guess the word in 3 seconds or guess 3 in a row, you will gain an extra joker.\n" +
                 "Write however you want, I'm not sensitive 😉 \n" +
                 "I guess it is it... Good luck Charlie! \n \n");
 
@@ -126,6 +125,7 @@ public class OrganizeGame {
                         System.out.println("Let's start!\n" +
                                 "Don't forget to play ENTER");
                         validInput = true;
+                        backgroundMusic();
                         break;
 
                     case "n":
@@ -140,7 +140,7 @@ public class OrganizeGame {
                         break;
 
                     default:
-                        throw new NotAnOption();
+                        throw new InvalidInputException();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -260,7 +260,7 @@ public class OrganizeGame {
     }
 
 
-    public void showShuffledWord() throws Exception {
+    public void showShuffledWord() {
         if (getGameLevel() < 7) {
             getWordLevelShuffledCharArray = getChars();
 

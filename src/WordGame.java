@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class WordGame {
     private Menu menu = new Menu();
     private OrganizeGame organizeGame = new OrganizeGame();
@@ -35,9 +37,9 @@ public class WordGame {
                             Colors.BOLD.getColorCode() + "Option 2: " + Colors.RESET.getColorCode() + "You play a game where you have to guess the word;");
                     break;
                 default:
-                    throw new NotAnOption();
+                    throw new InvalidInputException();
             }
-        } catch (Exception e) {
+        } catch (InvalidInputException e) {
             System.out.println(e.getMessage());
         } finally {
             start();

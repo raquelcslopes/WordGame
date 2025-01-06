@@ -42,7 +42,7 @@ public class Wordle {
         this.gameOn = gameOn;
     }
 
-    public void intro() throws NotAnOption {
+    public void intro() throws Exception {
         System.out.print(Colors.BACKGROUND_GREEN.getColorCode() + " W " + Colors.RESET.getColorCode());
         System.out.print(Colors.BACKGROUND_YELLOW.getColorCode() + " O " + Colors.RESET.getColorCode());
         System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + " R " + Colors.RESET.getColorCode());
@@ -83,7 +83,7 @@ public class Wordle {
                         break;
 
                     default:
-                        throw new NotAnOption();
+                        throw new InvalidInputException();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -98,10 +98,10 @@ public class Wordle {
         while (getCounter() <= 6) {
             createList();
             defineWord();
+            printWhiteSpaces();
 
             while (gameOn) {
                 convertWordListOfChars();
-                printWhiteSpaces();
                 comparingWords();
                 loser();
             }
@@ -190,17 +190,16 @@ public class Wordle {
         counter++;
     }
 
-    private void numberOfLettersException() {
+    private void numberOfLettersException() throws Exception {
         try {
             if (playerGuess.length() != 5) {
                 throw new NumberOfLettersWrong();
             }
         } catch (NumberOfLettersWrong e) {
             System.out.println(e.getMessage());
-        } finally {
-            printWhiteSpaces();
         }
     }
+
 
     private void coloringChars(ArrayList<Character> playerGuessArrayList, Map<Character, ArrayList<Integer>> gameHashMap, ArrayList<Character> charOccurrences) {
         for (int i = 0; i < playerGuess.length(); i++) {
