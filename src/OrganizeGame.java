@@ -1,5 +1,7 @@
 import javax.sound.sampled.*;
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -149,72 +151,24 @@ public class OrganizeGame {
         }
     }
 
-    public void createLists() {
-        getThreeLetterWord().add("ego");
-        getThreeLetterWord().add("dor");
-        getThreeLetterWord().add("ato");
-        getThreeLetterWord().add("dia");
-        getThreeLetterWord().add("sem");
-        getThreeLetterWord().add("reu");
-        getThreeLetterWord().add("ceu");
-        getThreeLetterWord().add("lua");
-        getThreeLetterWord().add("fim");
-        getThreeLetterWord().add("pai");
+    public void createLists() throws IOException {
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/ThreeLettersWords", getThreeLetterWord());
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/FourLetterWords", getFourLetterWord());
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/FiveLetterWords", getFiveLetterWord());
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/SixLetterWords", getSixLetterWord());
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/SevenLetterWords", getSevenLetterWord());
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/EigthLetterWords", getEigthLetterWord());
+    }
 
-        getFourLetterWord().add("brio");
-        getFourLetterWord().add("mito");
-        getFourLetterWord().add("saga");
-        getFourLetterWord().add("ruim");
-        getFourLetterWord().add("tras");
-        getFourLetterWord().add("caos");
-        getFourLetterWord().add("sede");
-        getFourLetterWord().add("zelo");
-        getFourLetterWord().add("coxo");
-        getFourLetterWord().add("soar");
+    public void buffer (String filePath, ArrayList<String> listOfWords) throws IOException {
+        BufferedReader reader = new BufferedReader (new FileReader(filePath));
 
-        getFiveLetterWord().add("exito");
-        getFiveLetterWord().add("etica");
-        getFiveLetterWord().add("tenue");
-        getFiveLetterWord().add("cerne");
-        getFiveLetterWord().add("anexo");
-        getFiveLetterWord().add("nobre");
-        getFiveLetterWord().add("negro");
-        getFiveLetterWord().add("audaz");
-        getFiveLetterWord().add("porem");
-        getFiveLetterWord().add("futil");
+        String line = " ";
 
-        getSixLetterWord().add("cinico");
-        getSixLetterWord().add("ambito");
-        getSixLetterWord().add("enfase");
-        getSixLetterWord().add("hetero");
-        getSixLetterWord().add("otario");
-        getSixLetterWord().add("inocuo");
-        getSixLetterWord().add("cetico");
-        getSixLetterWord().add("nocivo");
-        getSixLetterWord().add("solene");
-        getSixLetterWord().add("mister");
-
-        getSevenLetterWord().add("sublime");
-        getSevenLetterWord().add("sucinto");
-        getSevenLetterWord().add("empatia");
-        getSevenLetterWord().add("trivial");
-        getSevenLetterWord().add("sucesso");
-        getSevenLetterWord().add("estigma");
-        getSevenLetterWord().add("orgulho");
-        getSevenLetterWord().add("trivial");
-        getSevenLetterWord().add("virtude");
-        getSevenLetterWord().add("apatico");
-
-        getEigthLetterWord().add("inerente");
-        getEigthLetterWord().add("peculiar");
-        getEigthLetterWord().add("pandemia");
-        getEigthLetterWord().add("abstrato");
-        getEigthLetterWord().add("analogia");
-        getEigthLetterWord().add("inospito");
-        getEigthLetterWord().add("alicerce");
-        getEigthLetterWord().add("monotono");
-        getEigthLetterWord().add("prudente");
-        getEigthLetterWord().add("invasivo");
+        while ((line = reader.readLine()) != null) {
+            listOfWords.add(line);
+        }
+        reader.close();
     }
 
     public void wordLevel() {

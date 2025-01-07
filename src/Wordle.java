@@ -187,9 +187,9 @@ public class Wordle {
     private void numberOfLettersException() throws Exception {
         try {
             if (playerGuess.length() != 5) {
-                throw new NumberOfLettersWrong();
+                throw new NumberOfLettersWrongException();
             }
-        } catch (NumberOfLettersWrong e) {
+        } catch (NumberOfLettersWrongException e) {
             System.out.println(e.getMessage());
         }
     }
