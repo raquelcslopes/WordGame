@@ -165,7 +165,7 @@ public class Wordle {
     }
 
     public void comparingWords() throws Exception {
-        playerGuess = getPlayer().guessTheWord();
+        playerGuess = getPlayer().guessTheWord().toLowerCase();
         Map<Character, ArrayList<Integer>> gameHashMap = hashmapFunction(gameWord);
         ArrayList<Character> playerGuessArrayList = new ArrayList<>();
         ArrayList<Character> charOccurrences = new ArrayList<>();
