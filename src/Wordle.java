@@ -1,6 +1,8 @@
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.Collections;
@@ -14,6 +16,9 @@ public class Wordle {
     private int counter;
     private boolean gameOn = true;
     private String playerGuess;
+
+    public Wordle() throws IOException {
+    }
 
     public ArrayList<String> getFiveLetterWord() {
         return fiveLetterWord;
@@ -102,17 +107,19 @@ public class Wordle {
         }
     }
 
-    public void createList() {
-        getFiveLetterWord().add("exito");
-        getFiveLetterWord().add("etica");
-        getFiveLetterWord().add("tenue");
-        getFiveLetterWord().add("cerne");
-        getFiveLetterWord().add("anexo");
-        getFiveLetterWord().add("nobre");
-        getFiveLetterWord().add("negro");
-        getFiveLetterWord().add("audaz");
-        getFiveLetterWord().add("porem");
-        getFiveLetterWord().add("futil");
+    public void buffer(String filePath, ArrayList<String> listOfWords) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+        String line = " ";
+
+        while ((line = reader.readLine()) != null) {
+            listOfWords.add(line);
+        }
+        reader.close();
+    }
+
+    public void createList() throws IOException {
+        buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/FiveLetterWords", getFiveLetterWord());
     }
 
     public String selectRandomWord() {

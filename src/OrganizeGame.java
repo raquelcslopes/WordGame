@@ -1,8 +1,6 @@
 import javax.sound.sampled.*;
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class OrganizeGame {
@@ -24,7 +22,7 @@ public class OrganizeGame {
     Music musicObj = new Music();
 
     public OrganizeGame() {
-        this.joker = 3;
+        this.joker = 20;
         this.gameLevel = 1;
     }
 
@@ -125,10 +123,14 @@ public class OrganizeGame {
             try {
                 switch (guess) {
                     case "y":
+                        Scanner scanner = new Scanner(System.in);
+                        System.out.println("What's your name?");
+                        getPlayer().setName(scanner.next());
+
                         System.out.println("Let's start!\n" +
                                 "Don't forget to play ENTER");
                         validInput = true;
-                        //backgroundMusic();
+                        backgroundMusic();
                         break;
 
                     case "n":
@@ -160,8 +162,8 @@ public class OrganizeGame {
         buffer("/Users/admin.mindera/IdeaProjects/Word Game/src/EigthLetterWords", getEigthLetterWord());
     }
 
-    public void buffer (String filePath, ArrayList<String> listOfWords) throws IOException {
-        BufferedReader reader = new BufferedReader (new FileReader(filePath));
+    public void buffer(String filePath, ArrayList<String> listOfWords) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
 
         String line = " ";
 
@@ -288,10 +290,12 @@ public class OrganizeGame {
             rightAnswerMusic();
             setGameLevel(getGameLevel() + 1);
             setCounter(getCounter() + 1);
+            player.sumPoints(5);
 
             if (time < 3) {
                 System.out.println(Colors.GREEN.getColorCode() + " ☞ QUICK ONE, YOU WON 1 JOKER 🥳" + Colors.RESET.getColorCode());
                 setJoker(getJoker() + 1);
+                player.sumPoints(5);
             }
             return true;
 
@@ -319,12 +323,12 @@ public class OrganizeGame {
     public void increaseJoker() {
         if (counter == 3) {
             this.joker++;
-            System.out.println(Colors.GREEN.getColorCode()+ " ☞ You've won 1 JOKER 🤗" + Colors.RESET.getColorCode());
+            System.out.println(Colors.GREEN.getColorCode() + " ☞ You've won 1 JOKER 🤗" + Colors.RESET.getColorCode());
             setCounter(0);
         }
     }
 
-    public void useJoker() {
+    public void useJoker() throws IOException {
         System.out.println("The answer is: " + getGameWord() + " 🤯");
         setJoker(getJoker() - 1);
         setGameLevel(getGameLevel() + 1);
@@ -334,6 +338,7 @@ public class OrganizeGame {
         }
 
         if (getJoker() < 0) {
+            gameScore(getPlayer().getName(), player.getPoints());
             System.out.println("                                                                               \n" +
                     " ,----.     ,---.  ,--.   ,--.,------.     ,-----.,--.   ,--.,------.,------.  \n" +
                     "'  .-./    /  O  \\ |   `.'   ||  .---'    '  .-.  '\\  `.'  / |  .---'|  .--. ' \n" +
@@ -365,9 +370,10 @@ public class OrganizeGame {
         setJoker(3);
     }
 
-    public void finishGame () {
-        if(getGameLevel() == 11) {
+    public void finishGame() throws IOException {
+        if (getGameLevel() == 11) {
             setJoker(-1);
+            gameScore(getPlayer().getName(), player.getPoints());
             System.out.println(" __        _____ _   _ _   _ _____ ____  \n" +
                     " \\ \\      / /_ _| \\ | | \\ | | ____|  _ \\ \n" +
                     "  \\ \\ /\\ / / | ||  \\| |  \\| |  _| | |_) |\n" +
@@ -375,5 +381,13 @@ public class OrganizeGame {
                     "    \\_/\\_/  |___|_| \\_|_| \\_|_____|_| \\_\\\n" +
                     "                                         ");
         }
+    }
+
+    public void gameScore(String playerName, int points) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/admin.mindera/IdeaProjects/Word Game/src/Score", true));
+        writer.write(playerName + " ---> " + points);
+        writer.newLine();
+        writer.flush();
+       //writer.close();
     }
 }
