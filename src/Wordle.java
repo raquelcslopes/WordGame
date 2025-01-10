@@ -45,6 +45,7 @@ public class Wordle {
     }
 
     public void intro() throws Exception {
+        System.out.println("\n");
         System.out.print(Colors.BACKGROUND_GREEN.getColorCode() + " W " + Colors.RESET.getColorCode());
         System.out.print(Colors.BACKGROUND_YELLOW.getColorCode() + " O " + Colors.RESET.getColorCode());
         System.out.print(Colors.BACKGROUND_WHITE.getColorCode() + " R " + Colors.RESET.getColorCode());

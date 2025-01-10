@@ -90,20 +90,21 @@ public class OrganizeGame {
     }
 
     public void start() throws Exception {
-        intro();
+            intro();
 
-        while (getJoker() >= 0) {
-            createLists();
-            wordLevel();
-            shuflleWordLevel();
-            showShuffledWord();
-            checkWord();
-            increaseJoker();
-            finishGame();
+            while (getJoker() >= 0) {
+                createLists();
+                wordLevel();
+                shuflleWordLevel();
+                showShuffledWord();
+                checkWord();
+                increaseJoker();
+                finishGame();
+            }
         }
-    }
 
     private void intro() throws Exception {
+        System.out.println("\n ");
         System.out.println(Colors.MAGENTA.getColorCode() + " WELCOME TO THE WORD GAME " + Colors.RESET.getColorCode() + " \n" +
                 "I know, not an original name, but it is what it is, let's begin! \n" +
                 "In this game you will have shuffled letters and you will have to guess the word. \n" +
@@ -279,6 +280,8 @@ public class OrganizeGame {
         long initialTime = System.nanoTime();
 
         String playerGuess = getPlayer().guessTheWord().toLowerCase();
+        System.out.println("playerGuess = " + playerGuess);
+
 
         //ends the timer count
         long endTime = System.nanoTime();
@@ -305,7 +308,7 @@ public class OrganizeGame {
 
         } else if (playerGuess.equals("restart")) {
             JOptionPane.showMessageDialog(null, "Are you sure?", null,
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.QUESTION_MESSAGE);
             restart();
 
         } else if (getWrongAnswers().contains(playerGuess)) {
@@ -316,6 +319,7 @@ public class OrganizeGame {
             wrongAnswerMusic();
             getWrongAnswers().add(playerGuess);
             wrongAnswer();
+            return true;
         }
         return false;
     }
