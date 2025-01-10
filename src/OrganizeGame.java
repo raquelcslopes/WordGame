@@ -280,8 +280,6 @@ public class OrganizeGame {
         long initialTime = System.nanoTime();
 
         String playerGuess = getPlayer().guessTheWord().toLowerCase();
-        System.out.println("playerGuess = " + playerGuess);
-
 
         //ends the timer count
         long endTime = System.nanoTime();
