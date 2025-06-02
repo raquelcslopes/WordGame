@@ -4,7 +4,7 @@ Um jogo de adivinhação de palavras desenvolvido em Java, com diferentes nívei
 
 ## Funcionalidades
 - Vários níveis de dificuldade (palavras de 3 a 8 letras)
-- Sistema de pontos e "jokers" (coringas)
+- Sistema de pontos e "jokers"
 - Feedback visual e sonoro para respostas certas e erradas
 - Interface simples via console
 - Possibilidade de reiniciar o jogo
