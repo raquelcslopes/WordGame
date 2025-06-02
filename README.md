@@ -39,8 +39,6 @@ Um jogo de adivinhação de palavras desenvolvido em Java, com diferentes nívei
    java -cp src Main
    ```
 
-## Créditos
-Desenvolvido por [Seu Nome].
 
 ---
 Divirta-se jogando e aprimorando seu vocabulário!
